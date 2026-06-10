@@ -12,8 +12,8 @@ public class CourierZoneConfiguration : IEntityTypeConfiguration<CourierZone>
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Id).HasColumnName("CourierZoneId");
         builder.Property(x => x.Name).HasMaxLength(200).IsRequired();
-        builder.Property(x => x.Boundary).HasMaxLength(4000);
-        builder.Property(x => x.CenterPoint).HasMaxLength(100);
+        builder.Property(x => x.Boundary).HasColumnType("geography");
+        builder.Property(x => x.CenterPoint).HasColumnType("geography");
         builder.Property(x => x.Radius).HasColumnType("decimal(18,6)");
         builder.Property(x => x.Price).HasColumnType("decimal(18,2)");
         builder.Property(x => x.CreatedByIp).HasMaxLength(50);

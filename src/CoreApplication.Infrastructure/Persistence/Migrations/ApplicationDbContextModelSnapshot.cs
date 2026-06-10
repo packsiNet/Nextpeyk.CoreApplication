@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using NetTopologySuite.Geometries;
 
 #nullable disable
 
@@ -467,7 +468,8 @@ namespace CoreApplication.Infrastructure.Persistence.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedByIp")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("CreatedByUserId")
                         .HasColumnType("int");
@@ -500,7 +502,7 @@ namespace CoreApplication.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("CourierId");
 
-                    b.ToTable("CourierActivityTimes");
+                    b.ToTable("CourierActivityTimes", (string)null);
                 });
 
             modelBuilder.Entity("CoreApplication.Domain.Entities.Courier.CourierBoxSize", b =>
@@ -609,7 +611,7 @@ namespace CoreApplication.Infrastructure.Persistence.Migrations
                     b.HasIndex("CourierId")
                         .IsUnique();
 
-                    b.ToTable("CourierSettings");
+                    b.ToTable("CourierSettings", (string)null);
                 });
 
             modelBuilder.Entity("CoreApplication.Domain.Entities.Courier.CourierSlaConfig", b =>
@@ -673,13 +675,11 @@ namespace CoreApplication.Infrastructure.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Boundary")
-                        .HasMaxLength(4000)
-                        .HasColumnType("nvarchar(4000)");
+                    b.Property<Geometry>("Boundary")
+                        .HasColumnType("geography");
 
-                    b.Property<string>("CenterPoint")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<Point>("CenterPoint")
+                        .HasColumnType("geography");
 
                     b.Property<int?>("CityId")
                         .HasColumnType("int");
@@ -863,7 +863,8 @@ namespace CoreApplication.Infrastructure.Persistence.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Boundary")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -885,11 +886,12 @@ namespace CoreApplication.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cities");
+                    b.ToTable("Cities", (string)null);
                 });
 
             modelBuilder.Entity("CoreApplication.Domain.Entities.Sender.Sender", b =>
