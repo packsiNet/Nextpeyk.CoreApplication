@@ -33,6 +33,8 @@ public static class DependencyInjection
         services.AddScoped<IPasswordService, PasswordService>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<ISmsSender, ConsoleSmsStub>();
+        services.AddScoped<ISlaCalculationService, SlaCalculationService>();
+        services.AddHostedService<SlaSnapshotBackgroundService>();
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
