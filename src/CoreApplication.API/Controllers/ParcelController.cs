@@ -3,6 +3,7 @@ using CoreApplication.Application.Features.Parcels.Commands.RegisterParcel;
 using CoreApplication.Application.Features.Parcels.Queries.GetParcelById;
 using CoreApplication.Application.Features.Parcels.Queries.GetParcels;
 using CoreApplication.Application.Features.Parcels.Queries.InquireParcel;
+using CoreApplication.Application.Features.Parcels.Queries.TrackParcel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +19,10 @@ public class ParcelController : ApiControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] GetParcelsQuery query, CancellationToken ct)
         => Ok(await Mediator.Send(query, ct));
+
+    [HttpGet("track/{barcode}")]
+    public async Task<IActionResult> Track(string barcode, CancellationToken ct)
+        => Ok(await Mediator.Send(new TrackParcelQuery(barcode), ct));
 
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id, CancellationToken ct)

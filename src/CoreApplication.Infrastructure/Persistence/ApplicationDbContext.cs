@@ -6,6 +6,7 @@ using CoreApplication.Domain.Entities.Geography;
 using CoreApplication.Domain.Entities.Sender;
 using CoreApplication.Domain.Entities.Shipment;
 using CoreApplication.Domain.Entities.Sla;
+using CoreApplication.Domain.Entities.Tracking;
 using Microsoft.EntityFrameworkCore;
 
 namespace CoreApplication.Infrastructure.Persistence;
@@ -51,6 +52,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<SlaGlobalConfig> SlaGlobalConfigs => Set<SlaGlobalConfig>();
     public DbSet<CarrierSlaSnapshot> CarrierSlaSnapshots => Set<CarrierSlaSnapshot>();
     public DbSet<SlaAlert> SlaAlerts => Set<SlaAlert>();
+
+    // Tracking
+    public DbSet<CourierWorkSession> CourierWorkSessions => Set<CourierWorkSession>();
+    public DbSet<CourierLocationTrack> CourierLocationTracks => Set<CourierLocationTrack>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -1,3 +1,4 @@
+using CoreApplication.API.Hubs;
 using CoreApplication.API.Middlewares;
 using CoreApplication.API.Services;
 using CoreApplication.Application;
@@ -13,6 +14,9 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<ISenderContext, SenderContext>();
+builder.Services.AddScoped<ILiveLocationBroadcaster, SignalRLocationBroadcaster>();
+
+builder.Services.AddSignalR();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -53,5 +57,6 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<LocationHub>("/hubs/location");
 
 app.Run();

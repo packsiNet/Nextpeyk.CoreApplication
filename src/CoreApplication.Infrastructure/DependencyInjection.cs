@@ -36,6 +36,10 @@ public static class DependencyInjection
         services.AddScoped<ISlaCalculationService, SlaCalculationService>();
         services.AddHostedService<SlaSnapshotBackgroundService>();
 
+        services.AddScoped<IRouteSimplificationService, DouglasPeuckerService>();
+        services.AddScoped<IMapMatchingService, OsrmMapMatchingService>();
+        services.AddHttpClient("osrm");
+
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
@@ -49,6 +53,20 @@ public static class DependencyInjection
                     ValidateAudience = true,
                     ValidAudience = configuration["Jwt:Audience"],
                     ValidateLifetime = true
+                };
+                // SignalR sends JWT via query string (WebSocket can't use headers)
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var token = context.Request.Query["access_token"];
+                        if (!string.IsNullOrEmpty(token) &&
+                            context.HttpContext.Request.Path.StartsWithSegments("/hubs/location"))
+                        {
+                            context.Token = token;
+                        }
+                        return Task.CompletedTask;
+                    }
                 };
             })
             .AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>(

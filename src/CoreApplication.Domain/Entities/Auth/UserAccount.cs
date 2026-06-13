@@ -12,6 +12,7 @@ public class UserAccount : AuditableEntity
     public string? LastName { get; set; }
     public string? NationalCode { get; set; }
     public string? SecurityStamp { get; set; }
+    public bool MustChangePassword { get; set; } = false;
     public int? CourierId { get; set; }
     public int? SenderId { get; set; }
 

@@ -196,6 +196,11 @@ namespace CoreApplication.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("ModifiedDateTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("MustChangePassword")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<string>("NationalCode")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
@@ -1601,6 +1606,115 @@ namespace CoreApplication.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("CoreApplication.Domain.Entities.Tracking.CourierLocationTrack", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("CourierLocationTrackId");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<float?>("Accuracy")
+                        .HasColumnType("real");
+
+                    b.Property<int>("CourierId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FleetId")
+                        .HasColumnType("int");
+
+                    b.Property<float?>("Heading")
+                        .HasColumnType("real");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<Point>("Location")
+                        .IsRequired()
+                        .HasColumnType("geography");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("RecordedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<float?>("Speed")
+                        .HasColumnType("real");
+
+                    b.Property<int>("WorkSessionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WorkSessionId");
+
+                    b.HasIndex("CourierId", "RecordedAt");
+
+                    b.HasIndex("FleetId", "RecordedAt");
+
+                    b.ToTable("CourierLocationTrack", (string)null);
+                });
+
+            modelBuilder.Entity("CoreApplication.Domain.Entities.Tracking.CourierWorkSession", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("CourierWorkSessionId");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CourierId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("EndedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FleetId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ModifiedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ModifiedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateOnly>("SessionDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime>("StartedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("TotalDistanceMeters")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourierId", "SessionDate");
+
+                    b.HasIndex("FleetId", "SessionDate")
+                        .IsUnique();
+
+                    b.ToTable("CourierWorkSession", (string)null);
+                });
+
             modelBuilder.Entity("CoreApplication.Domain.Entities.Auth.UserAccount", b =>
                 {
                     b.HasOne("CoreApplication.Domain.Entities.Courier.Courier", "Courier")
@@ -1865,6 +1979,36 @@ namespace CoreApplication.Infrastructure.Persistence.Migrations
                     b.Navigation("Snapshot");
                 });
 
+            modelBuilder.Entity("CoreApplication.Domain.Entities.Tracking.CourierLocationTrack", b =>
+                {
+                    b.HasOne("CoreApplication.Domain.Entities.Tracking.CourierWorkSession", "WorkSession")
+                        .WithMany("LocationTracks")
+                        .HasForeignKey("WorkSessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("WorkSession");
+                });
+
+            modelBuilder.Entity("CoreApplication.Domain.Entities.Tracking.CourierWorkSession", b =>
+                {
+                    b.HasOne("CoreApplication.Domain.Entities.Courier.Courier", "Courier")
+                        .WithMany()
+                        .HasForeignKey("CourierId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("CoreApplication.Domain.Entities.Fleet.FleetEntity", "Fleet")
+                        .WithMany()
+                        .HasForeignKey("FleetId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Courier");
+
+                    b.Navigation("Fleet");
+                });
+
             modelBuilder.Entity("CoreApplication.Domain.Entities.Auth.Role", b =>
                 {
                     b.Navigation("UserRoles");
@@ -1946,6 +2090,11 @@ namespace CoreApplication.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("CoreApplication.Domain.Entities.Sla.SlaGlobalConfig", b =>
                 {
                     b.Navigation("Snapshots");
+                });
+
+            modelBuilder.Entity("CoreApplication.Domain.Entities.Tracking.CourierWorkSession", b =>
+                {
+                    b.Navigation("LocationTracks");
                 });
 #pragma warning restore 612, 618
         }

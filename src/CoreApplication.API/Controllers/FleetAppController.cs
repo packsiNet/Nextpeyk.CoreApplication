@@ -1,5 +1,7 @@
 using CoreApplication.Application.Features.FleetApp.Commands.AcceptParcels;
 using CoreApplication.Application.Features.FleetApp.Commands.DeliverParcel;
+using CoreApplication.Application.Features.FleetApp.Commands.EndWorkSession;
+using CoreApplication.Application.Features.FleetApp.Commands.RecordLocationBatch;
 using CoreApplication.Application.Features.FleetApp.Commands.ReturnParcel;
 using CoreApplication.Application.Features.FleetApp.Queries.GetAssignedParcels;
 using Microsoft.AspNetCore.Authorization;
@@ -40,6 +42,25 @@ public class FleetAppController : ApiControllerBase
     public async Task<IActionResult> Return(int id, [FromBody] ReturnParcelRequest request, CancellationToken ct)
     {
         await Mediator.Send(new ReturnParcelCommand(id, request.ReturnReason, request.ReturnNote, request.ImagePaths), ct);
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Send a batch of GPS location points. Auto-creates work session on first call of the day.
+    /// Mobile should call this every 15-30 seconds, buffering points locally when offline.
+    /// </summary>
+    [HttpPost("location/batch")]
+    public async Task<IActionResult> RecordLocation([FromBody] RecordLocationBatchCommand command, CancellationToken ct)
+    {
+        await Mediator.Send(command, ct);
+        return NoContent();
+    }
+
+    /// <summary>End the driver's work session for today.</summary>
+    [HttpPost("location/session/end")]
+    public async Task<IActionResult> EndSession(CancellationToken ct)
+    {
+        await Mediator.Send(new EndWorkSessionCommand(), ct);
         return NoContent();
     }
 }

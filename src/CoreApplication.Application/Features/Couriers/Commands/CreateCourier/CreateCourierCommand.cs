@@ -23,4 +23,11 @@ public record CreateCourierCommand(
     bool HasFMCG,
     bool HasFreightCollect,
     bool HasPackaging,
-    bool IsGroupAcceptance) : IRequest<int>;
+    bool IsGroupAcceptance,
+    // اطلاعات کاربر CourierManager
+    string UserName,
+    string Password,
+    string? UserPhoneNumber,
+    string? UserFirstName,
+    string? UserLastName,
+    bool ForcePasswordChange = true) : IRequest<int>;

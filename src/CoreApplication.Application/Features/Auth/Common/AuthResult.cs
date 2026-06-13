@@ -5,4 +5,5 @@ public record AuthResult(
     int UserId,
     string UserName,
     IEnumerable<string> Roles,
-    int? CourierId);
+    int? CourierId,
+    bool MustChangePassword);

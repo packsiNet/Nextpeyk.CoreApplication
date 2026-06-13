@@ -12,10 +12,11 @@ public class GetProcessingParcelsQueryHandler(
     ICurrentUserService currentUser)
     : IRequestHandler<GetProcessingParcelsQuery, List<ProcessingParcelDto>>
 {
-    public async Task<List<ProcessingParcelDto>> Handle(GetProcessingParcelsQuery request, CancellationToken cancellationToken)
+    public async Task<List<ProcessingParcelDto>> Handle(
+        GetProcessingParcelsQuery request,
+        CancellationToken cancellationToken)
     {
-        var courierId = currentUser.CourierId
-            ?? throw new ForbiddenAccessException();
+        var courierId = currentUser.CourierId ?? throw new ForbiddenAccessException();
 
         return await context.ParcelCouriers
             .Where(pc =>
@@ -35,9 +36,15 @@ public class GetProcessingParcelsQueryHandler(
                 (double)pc.DistributeLatitude,
                 (double)pc.DistributeLongitude,
                 pc.DistributeAddress,
+                (double)pc.CollectLatitude,
+                (double)pc.CollectLongitude,
+                pc.CollectAddress,
                 pc.Parcel.HasCOD,
                 pc.Parcel.HasFMCG,
                 pc.Parcel.HasFreightCollect,
+                pc.Parcel.Weight,
+                pc.Parcel.Value,
+                pc.AssignedAt,
                 pc.PromisedDeliveryAt))
             .AsNoTracking()
             .ToListAsync(cancellationToken);

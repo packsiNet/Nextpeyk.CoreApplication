@@ -5,6 +5,7 @@ using CoreApplication.Domain.Entities.Geography;
 using CoreApplication.Domain.Entities.Sender;
 using CoreApplication.Domain.Entities.Shipment;
 using CoreApplication.Domain.Entities.Sla;
+using CoreApplication.Domain.Entities.Tracking;
 using Microsoft.EntityFrameworkCore;
 
 namespace CoreApplication.Application.Common.Interfaces;
@@ -49,6 +50,10 @@ public interface IApplicationDbContext
     DbSet<SlaGlobalConfig> SlaGlobalConfigs { get; }
     DbSet<CarrierSlaSnapshot> CarrierSlaSnapshots { get; }
     DbSet<SlaAlert> SlaAlerts { get; }
+
+    // Tracking
+    DbSet<CourierWorkSession> CourierWorkSessions { get; }
+    DbSet<CourierLocationTrack> CourierLocationTracks { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

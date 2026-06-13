@@ -23,5 +23,11 @@ public class CreateCourierCommandValidator : AbstractValidator<CreateCourierComm
         RuleFor(x => x.MinimumParcelsInOneOrder).GreaterThan(0);
         RuleFor(x => x.SupportPhoneNumber).MaximumLength(20);
         RuleFor(x => x.Website).MaximumLength(200);
+
+        RuleFor(x => x.UserName).NotEmpty().MaximumLength(100);
+        RuleFor(x => x.Password).NotEmpty().MinimumLength(6).MaximumLength(100);
+        RuleFor(x => x.UserPhoneNumber).MaximumLength(20);
+        RuleFor(x => x.UserFirstName).MaximumLength(100);
+        RuleFor(x => x.UserLastName).MaximumLength(100);
     }
 }

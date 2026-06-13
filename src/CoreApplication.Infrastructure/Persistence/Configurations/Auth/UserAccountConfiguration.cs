@@ -18,6 +18,7 @@ public class UserAccountConfiguration : IEntityTypeConfiguration<UserAccount>
         builder.Property(x => x.LastName).HasMaxLength(100);
         builder.Property(x => x.NationalCode).HasMaxLength(20);
         builder.Property(x => x.SecurityStamp).HasMaxLength(256);
+        builder.Property(x => x.MustChangePassword).HasDefaultValue(false);
         builder.Property(x => x.CreatedByIp).HasMaxLength(50);
         builder.Property(x => x.RowVersion).IsRowVersion();
 

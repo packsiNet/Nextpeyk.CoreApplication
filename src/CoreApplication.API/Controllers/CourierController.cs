@@ -7,8 +7,10 @@ using CoreApplication.Application.Features.Couriers.Commands.RemoveBoxSizeFromCo
 using CoreApplication.Application.Features.Couriers.Commands.SetCourierActivityTimes;
 using CoreApplication.Application.Features.Couriers.Commands.SetCourierSlaConfigs;
 using CoreApplication.Application.Features.Couriers.Commands.UpdateCourier;
+using CoreApplication.Application.Features.Couriers.Commands.UpdateCourierSetting;
 using CoreApplication.Application.Features.Couriers.Commands.UpdateCourierZone;
 using CoreApplication.Application.Features.Couriers.Queries.GetCourierById;
+using CoreApplication.Application.Features.Couriers.Queries.GetCourierSetting;
 using CoreApplication.Application.Features.Couriers.Queries.GetCouriers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -53,6 +55,19 @@ public class CourierController : ApiControllerBase
     public async Task<IActionResult> Delete(int id, CancellationToken ct)
     {
         await Mediator.Send(new DeleteCourierCommand(id), ct);
+        return NoContent();
+    }
+
+    // --- Settings ---
+
+    [HttpGet("{id:int}/settings")]
+    public async Task<IActionResult> GetSettings(int id, CancellationToken ct)
+        => Ok(await Mediator.Send(new GetCourierSettingQuery(id), ct));
+
+    [HttpPut("{id:int}/settings")]
+    public async Task<IActionResult> UpdateSettings(int id, [FromBody] UpdateCourierSettingRequest request, CancellationToken ct)
+    {
+        await Mediator.Send(new UpdateCourierSettingCommand(id, request.IsGroupAcceptance), ct);
         return NoContent();
     }
 
@@ -117,6 +132,8 @@ public class CourierController : ApiControllerBase
         return NoContent();
     }
 }
+
+public record UpdateCourierSettingRequest(bool IsGroupAcceptance);
 
 public record UpdateCourierRequest(
     string Title, string? Description, string? Logo,

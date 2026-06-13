@@ -42,6 +42,6 @@ public class VerifyOtpCommandHandler(
 
         var token = jwtService.GenerateToken(user, roles);
 
-        return new AuthResult(token, user.Id, user.UserName, roles, user.CourierId);
+        return new AuthResult(token, user.Id, user.UserName, roles, user.CourierId, user.MustChangePassword);
     }
 }

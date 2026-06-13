@@ -7,5 +7,6 @@ public enum ParcelTrackingEnum
     ReceivedByFleet = 2,
     FinalizedDelivery = 3,
     Returned = 4,
-    AssignCancelled = 5
+    AssignCancelled = 5,
+    PhysicallyAbsent = 6
 }
